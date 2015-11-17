@@ -1,8 +1,14 @@
 #include "GameScene.h"
 #include "GameOverScene.h"
 #include "PauseScene.h"
+#include "StartScene.h"
+#include <string>
 
 USING_NS_CC;
+
+int GameScene::_Situation;
+std::string GameScene::_valkyrie;
+std::string GameScene::_hour;
 
 Scene* GameScene::createScene()
 {
@@ -29,15 +35,19 @@ bool GameScene::init()
 		return false;
 	}
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Size _visibleSize = Director::getInstance()->getVisibleSize();
 
+	GameScene::_Situation = CCUserDefault::sharedUserDefault()->getIntegerForKey("situation");
+	GameScene::_valkyrie = CCUserDefault::sharedUserDefault()->getStringForKey("valkyrie");
+	GameScene::_hour = CCUserDefault::sharedUserDefault()->getStringForKey("hour");
+	seconds = 0;
 	
 	//////////////////////////////
 	// 2. create background
 	auto background = Sprite::create("images/GameScreen/portadaCaca.png");
 
-	background->setPosition(Point((visibleSize.width / 2),
-		(visibleSize.height / 2)));
+	background->setPosition(Point((_visibleSize.width / 2),
+		(_visibleSize.height / 2)));
 	addChild(background, 0);
 
 	//////////////////////////////
@@ -53,7 +63,17 @@ bool GameScene::init()
 
 	//////////////////////////////
 	// 4. set situation
-	//_sceneId = Situation;
+
+	__String *text = __String::createWithFormat("%d", GameScene::_Situation);
+	_labelSit = Label::createWithTTF(text->getCString(), "fonts/MArker Felt.ttf", 24);
+
+	_labelSit->setPosition(Vec2(_visibleSize.width - 150, _visibleSize.height - 30));
+	addChild(_labelSit, 3);
+
+	_labelHour = Label::createWithTTF(GameScene::_hour, "fonts/MArker Felt.ttf", 24);
+
+	_labelHour->setPosition(Vec2(_visibleSize.width / 2, 50));
+	addChild(_labelHour, 3);
 
 	return true;
 }
@@ -75,10 +95,17 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 	_pressedKey = keyCode;
 
 	switch (_pressedKey) {
-	case EventKeyboard::KeyCode::KEY_SPACE:
-		//CC_CALLBACK_1(MainMenu::goToStartScene, this);
-		goToPauseScene(this);
-		break;
+		case EventKeyboard::KeyCode::KEY_SPACE:
+			//CC_CALLBACK_1(MainMenu::goToStartScene, this);
+			goToPauseScene(this);
+			break;
+		case EventKeyboard::KeyCode::KEY_Q:
+			//CC_CALLBACK_1(MainMenu::goToStartScene, this);
+			GameScene::_Situation ++;
+			__String *text = __String::createWithFormat("%d",
+				GameScene::_Situation);
+			_labelSit->setString(text->getCString());
+			break;
 	
 	}
 }
@@ -86,4 +113,16 @@ void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 	if (_pressedKey == keyCode) {
 		_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 	}
+}
+
+void GameScene::setCurrentInformation() {
+	CCUserDefault::getInstance();
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("situation", GameScene::_Situation);
+	CCUserDefault::sharedUserDefault()->setStringForKey("valkyrie", GameScene::_valkyrie);
+	CCUserDefault::sharedUserDefault()->setStringForKey("hour", GameScene::_hour);
+	CCUserDefault::sharedUserDefault()->flush();
+}
+
+void GameScene::setTimer() {
+
 }

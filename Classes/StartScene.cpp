@@ -4,6 +4,7 @@
 
 USING_NS_CC;
 
+
 Scene* StartScene::createScene()
 {
 	// 'scene' is an autorelease object
@@ -31,6 +32,12 @@ bool StartScene::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+	auto background = Sprite::create("images/GameScreen/StartImage.jpg");
+
+	background->setPosition(Point((visibleSize.width / 2),
+		(visibleSize.height / 2)));
+	addChild(background, 0);
+
 	_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 
 	auto listener = EventListenerKeyboard::create();
@@ -57,6 +64,10 @@ void StartScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 
 	switch (_pressedKey) {
 	case EventKeyboard::KeyCode::KEY_Q:
+		setDefaultInformation();
+		goToGameScene(this);
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
 		goToGameScene(this);
 		break;
 	case EventKeyboard::KeyCode::KEY_R:
@@ -68,4 +79,12 @@ void StartScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 	if (_pressedKey == keyCode) {
 		_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 	}
+}
+
+void StartScene::setDefaultInformation() {
+	CCUserDefault::sharedUserDefault()->getInstance();
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("situation", 0);
+	CCUserDefault::sharedUserDefault()->setStringForKey("valkyrie", "Brunilda");
+	CCUserDefault::sharedUserDefault()->setStringForKey("hour", "20:00");
+	CCUserDefault::sharedUserDefault()->flush();
 }

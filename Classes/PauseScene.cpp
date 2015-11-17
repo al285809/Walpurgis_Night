@@ -31,6 +31,12 @@ bool PauseScene::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+	auto background = Sprite::create("images/PauseScreen/PauseImage.jpg");
+
+	background->setPosition(Point((visibleSize.width / 2),
+		(visibleSize.height / 2)));
+	addChild(background, 0);
+
 	_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 
 	auto listener = EventListenerKeyboard::create();
@@ -64,7 +70,7 @@ void PauseScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 
 	switch (_pressedKey) {
 	case EventKeyboard::KeyCode::KEY_Q:
-		//CC_CALLBACK_1(MainMenu::goToStartScene, this);
+		GameScene::setCurrentInformation();
 		goToMainMenu(this);
 		break;
 	case EventKeyboard::KeyCode::KEY_R:

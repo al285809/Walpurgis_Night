@@ -21,9 +21,10 @@ public:
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event);
 
+	void setDefaultInformation();
+
 	// implement the "static create()" method manually
 	CREATE_FUNC(StartScene);
 };
 
 #endif
-
