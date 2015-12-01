@@ -2,13 +2,17 @@
 #include "GameOverScene.h"
 #include "PauseScene.h"
 #include "StartScene.h"
+#include "Valkyrie.h"
 #include <string>
+#include "Data.h"
 
 USING_NS_CC;
 
 int GameScene::_Situation;
 std::string GameScene::_valkyrie;
-std::string GameScene::_hour;
+int GameScene::_hour;
+int GameScene::_minute;
+int GameScene::_healthPoints;
 
 Scene* GameScene::createScene()
 {
@@ -35,12 +39,26 @@ bool GameScene::init()
 		return false;
 	}
 
+	Point origin = Director::sharedDirector()->getVisibleOrigin();
+	Size size = Director::sharedDirector()->getVisibleSize(); 
+
+	testSprite = Sprite::create("images/GameScreen/Valquiria.png");
+	testSprite->setPosition(Point(size.width / 2 + origin.x, size.height / 2 + origin.y));
+
+	this->addChild(testSprite, 5);
+
+	float playfield_width = size.width * 2.0;
+	float playfield_height = size.height * 2.0;
+
+	this->runAction(Follow::create(testSprite, Rect(size.width / 2 + origin.x - playfield_width / 2, size.height / 2 + origin.y - playfield_height / 2, playfield_width, playfield_height)));
+
 	Size _visibleSize = Director::getInstance()->getVisibleSize();
 
 	GameScene::_Situation = CCUserDefault::sharedUserDefault()->getIntegerForKey("situation");
-	GameScene::_valkyrie = CCUserDefault::sharedUserDefault()->getStringForKey("valkyrie");
-	GameScene::_hour = CCUserDefault::sharedUserDefault()->getStringForKey("hour");
-	seconds = 0;
+	//GameScene::_valkyrie = Valkyrie::Vname;
+	GameScene::_hour = CCUserDefault::sharedUserDefault()->getIntegerForKey("hour");
+	GameScene::_minute = CCUserDefault::sharedUserDefault()->getIntegerForKey("minute");
+	GameScene::_healthPoints = CCUserDefault::sharedUserDefault()->getIntegerForKey("HP");
 	
 	//////////////////////////////
 	// 2. create background
@@ -49,6 +67,9 @@ bool GameScene::init()
 	background->setPosition(Point((_visibleSize.width / 2),
 		(_visibleSize.height / 2)));
 	addChild(background, 0);
+
+	//valkyrie = new Valkyrie(this);
+	//valkyrie->setPosition(Point(valkyrie->posX, valkyrie->posY));
 
 	//////////////////////////////
 	// 3. prepare keys and buttons
@@ -70,16 +91,38 @@ bool GameScene::init()
 	_labelSit->setPosition(Vec2(_visibleSize.width - 150, _visibleSize.height - 30));
 	addChild(_labelSit, 3);
 
-	_labelHour = Label::createWithTTF(GameScene::_hour, "fonts/MArker Felt.ttf", 24);
+	__String *hourToDisplay = __String::createWithFormat("%.2i:%.2i", GameScene::_hour, GameScene::_minute);
+	_labelHour = Label::createWithTTF(hourToDisplay->getCString(), "fonts/MArker Felt.ttf", 24);
 
 	_labelHour->setPosition(Vec2(_visibleSize.width / 2, 50));
 	addChild(_labelHour, 3);
+
+	//////////////////////////////
+	// 5. start time
+
+	time = 0;
+	this->schedule(schedule_selector(GameScene::Timer), 0.01);
 
 	return true;
 }
 
 void GameScene::moveScene() {
 
+}
+
+void GameScene::Timer(float dt) {
+	time += dt;
+	if (time >= 15) {
+		GameScene::_minute++;
+		if (GameScene::_minute == 60) {
+			GameScene::_minute = 0;
+			GameScene::_hour++;
+			if (GameScene::_hour == 24) GameScene::goToGameOverScene(this);
+		}
+		time = 0;
+	}
+	__String *hour = __String::createWithFormat("%.2i:%.2i", GameScene::_hour, GameScene::_minute);
+	_labelHour->setString(hour->getCString());
 }
 
 void GameScene::goToPauseScene(Ref *pSender) {
@@ -95,6 +138,22 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 	_pressedKey = keyCode;
 
 	switch (_pressedKey) {
+		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+			testSprite->setPositionX(testSprite->getPositionX() + 5.0);
+			_labelHour->setPositionX(_labelHour->getPositionX() + 5.0);
+			break;
+		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+			testSprite->setPositionX(testSprite->getPositionX() - 5.0);
+			_labelHour->setPositionX(_labelHour->getPositionX() - 5.0);
+			break;
+		case EventKeyboard::KeyCode::KEY_UP_ARROW:
+			testSprite->setPositionY(testSprite->getPositionY() + 5.0);
+			_labelHour->setPositionY(_labelHour->getPositionY() + 5.0);
+			break;
+		case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+			testSprite->setPositionY(testSprite->getPositionY() - 5.0);
+			_labelHour->setPositionY(_labelHour->getPositionY() - 5.0);
+			break;
 		case EventKeyboard::KeyCode::KEY_SPACE:
 			//CC_CALLBACK_1(MainMenu::goToStartScene, this);
 			goToPauseScene(this);
@@ -113,16 +172,4 @@ void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 	if (_pressedKey == keyCode) {
 		_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 	}
-}
-
-void GameScene::setCurrentInformation() {
-	CCUserDefault::getInstance();
-	CCUserDefault::sharedUserDefault()->setIntegerForKey("situation", GameScene::_Situation);
-	CCUserDefault::sharedUserDefault()->setStringForKey("valkyrie", GameScene::_valkyrie);
-	CCUserDefault::sharedUserDefault()->setStringForKey("hour", GameScene::_hour);
-	CCUserDefault::sharedUserDefault()->flush();
-}
-
-void GameScene::setTimer() {
-
 }

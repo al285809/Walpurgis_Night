@@ -11,12 +11,15 @@ private:
 	EventKeyboard::KeyCode _pressedKey;
 	Label *_labelSit;
 	Label *_labelHour;
-	static int _Situation;
-	static std::string _valkyrie;
-	static std::string _hour;
-	float seconds;
+	static int _healthPoints;
+	Sprite *testSprite;
 
 public:
+	static int _Situation;
+	static std::string _valkyrie;
+	static int _hour;
+	static int _minute;
+	//Valkyrie *valkyrie;
 
 	static cocos2d::Scene* createScene();
 
@@ -24,14 +27,14 @@ public:
 	void goToGameOverScene(Ref *pSender);
 
 	void moveScene();
+	void Timer(float dt);
+
+	float time;
 
 	virtual bool init();
 
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event);
-
-	static void setCurrentInformation();
-	void setTimer();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);

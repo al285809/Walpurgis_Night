@@ -1,6 +1,7 @@
 #include "PauseScene.h"
 #include "MainMenuScene.h"
 #include "GameScene.h"
+#include "Data.h"
 
 USING_NS_CC;
 
@@ -70,7 +71,7 @@ void PauseScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 
 	switch (_pressedKey) {
 	case EventKeyboard::KeyCode::KEY_Q:
-		GameScene::setCurrentInformation();
+		DataClass::setCurrentInformation();
 		goToMainMenu(this);
 		break;
 	case EventKeyboard::KeyCode::KEY_R:
