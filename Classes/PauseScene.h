@@ -2,6 +2,8 @@
 #define __PAUSE_SCENE_H__
 
 #include "cocos2d.h"
+#include "Characters\Valkyrie.h"
+#include "Items.h"
 
 USING_NS_CC;
 
@@ -18,6 +20,7 @@ public:
 	void retryGameScene(Ref *pSender);
 
 	virtual bool init();
+
 
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event);

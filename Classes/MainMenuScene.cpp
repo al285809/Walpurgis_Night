@@ -33,21 +33,17 @@ bool MainMenu::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto background = Sprite::create("images/MainMenuScreen/Background.png");
+	auto background = Sprite::create("images/GameScreen/portada.png");
 
 	background->setPosition(Point((visibleSize.width / 2),
 		(visibleSize.height / 2)));
 	addChild(background, 0);
 
-	auto menuTitle = MenuItemImage::create("images/MainMenuScreen/Game_Title.png",
-		"images/MainMenuScreen/Game_Title.png");
+	__String *hourToDisplay = __String::createWithFormat("Press [Q]");
+	_label = Label::createWithTTF(hourToDisplay->getCString(), "fonts/MArker Felt.ttf", 24);
 
-	auto playItem = MenuItemImage::create("images/MainMenuScreen/Play_Button.png",
-		"images/MainMenuScreen/Play_Button(Click).png");
-
-	auto menu = Menu::create(menuTitle, playItem, NULL);
-
-	menu->alignItemsVerticallyWithPadding(visibleSize.height / 4);
+	_label->setPosition(Vec2(visibleSize.width / 2, 50));
+	addChild(_label, 3);
 
 	_pressedKey = EventKeyboard::KeyCode::KEY_NONE;
 
@@ -69,7 +65,7 @@ bool MainMenu::init()
 	}
 	*/
 
-	addChild(menu, 1);
+	//addChild(menu, 1);
 
 	return true;
 }

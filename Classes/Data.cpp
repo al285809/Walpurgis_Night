@@ -1,6 +1,6 @@
 #include "Data.h"
 #include "GameScene.h"
-#include "Valkyrie.h"
+#include "Characters\Valkyrie.h"
 
 void DataClass::setDefaultInformation()
 {
@@ -17,9 +17,10 @@ void DataClass::setCurrentInformation()
 {
 	CCUserDefault::getInstance();
 	CCUserDefault::sharedUserDefault()->setIntegerForKey("situation", GameScene::_Situation);
-	//CCUserDefault::sharedUserDefault()->setStringForKey("valkyrie", Valkyrie::Vname);
+	CCUserDefault::sharedUserDefault()->setStringForKey("valkyrie", "Brunilda");
 	CCUserDefault::sharedUserDefault()->setIntegerForKey("hour", GameScene::_hour);
 	CCUserDefault::sharedUserDefault()->setIntegerForKey("minute", GameScene::_minute);
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("HP", GameScene::_healthPoints);
 	CCUserDefault::sharedUserDefault()->flush();
 }
 
